@@ -22,16 +22,15 @@ import java.util.List;
  */
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
     /**
-     * The list of tasks the adapter deals with
-     */
-    @NonNull
-    private List<Task> tasks;
-
-    /**
      * The listener for when a task needs to be deleted
      */
     @NonNull
     private final DeleteTaskListener deleteTaskListener;
+    /**
+     * The list of tasks the adapter deals with
+     */
+    @NonNull
+    private List<Task> tasks;
 
     /**
      * Instantiates a new TasksAdapter.
@@ -116,7 +115,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         /**
          * Instantiates a new TaskViewHolder.
          *
-         * @param itemView the view of the task item
+         * @param itemView           the view of the task item
          * @param deleteTaskListener the listener for when a task needs to be deleted to set
          */
         TaskViewHolder(@NonNull View itemView, @NonNull DeleteTaskListener deleteTaskListener) {
@@ -129,13 +128,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             lblProjectName = itemView.findViewById(R.id.lbl_project_name);
             imgDelete = itemView.findViewById(R.id.img_delete);
 
-            imgDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final Object tag = view.getTag();
-                    if (tag instanceof Task) {
-                        TaskViewHolder.this.deleteTaskListener.onDeleteTask((Task) tag);
-                    }
+            imgDelete.setOnClickListener(view -> {
+                final Object tag = view.getTag();
+                if (tag instanceof Task) {
+                    TaskViewHolder.this.deleteTaskListener.onDeleteTask((Task) tag);
                 }
             });
         }

@@ -1,5 +1,6 @@
 package com.cleanup.todoc.model;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
@@ -16,19 +17,19 @@ import java.util.Comparator;
 
 @Entity(tableName = "Tasks", foreignKeys = @ForeignKey(entity = Project.class,
         parentColumns = "id",
-        childColumns = "projectId"))
+        childColumns = "project_id"))
 
 public class Task {
     /**
      * The unique identifier of the task
      */
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true) //  <<<<<<<<<<<<<<<<<<<<< TODO OK >>>> in MainActivity
     private long id;
 
     /**
      * The unique identifier of the project associated to the task
      */
-
+    @ColumnInfo(name = "project_id", index = true)
     private long projectId;
 
     /**
@@ -77,6 +78,11 @@ public class Task {
         this.id = id;
     }
 
+
+    public long getProjectId() {
+        return projectId;
+    }
+
     /**
      * Sets the unique identifier of the project associated to the task.
      *
@@ -84,6 +90,20 @@ public class Task {
      */
     private void setProjectId(long projectId) {
         this.projectId = projectId;
+    }
+
+
+    public long getCreationTimestamp() {
+        return creationTimestamp;
+    }
+
+    /**
+     * Sets the timestamp when the task has been created.
+     *
+     * @param creationTimestamp the timestamp when the task has been created to set
+     */
+    private void setCreationTimestamp(long creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
     }
 
     /**
@@ -113,15 +133,6 @@ public class Task {
      */
     private void setName(@NonNull String name) {
         this.name = name;
-    }
-
-    /**
-     * Sets the timestamp when the task has been created.
-     *
-     * @param creationTimestamp the timestamp when the task has been created to set
-     */
-    private void setCreationTimestamp(long creationTimestamp) {
-        this.creationTimestamp = creationTimestamp;
     }
 
     /**
