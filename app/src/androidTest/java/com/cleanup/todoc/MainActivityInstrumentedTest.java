@@ -1,16 +1,26 @@
 package com.cleanup.todoc;
 
+import android.arch.persistence.room.Room;
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cleanup.todoc.database.ProjectDao;
+import com.cleanup.todoc.database.TaskDao;
+import com.cleanup.todoc.database.TodocDataBase;
 import com.cleanup.todoc.ui.MainActivity;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Objects;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -32,12 +42,33 @@ import static org.junit.Assert.assertThat;
 public class MainActivityInstrumentedTest {
     @Rule
     public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
+    private TaskDao mTaskDao;
+    private ProjectDao mProjectDao;
+    private TodocDataBase database;
+
+    @Before
+    public void createDb() {
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+
+        database = Room.inMemoryDatabaseBuilder(context, TodocDataBase.class).allowMainThreadQueries().build(); //  use Room
+        mTaskDao = database.taskDao();
+        mProjectDao = database.projectDao();
+    }
+
+    @After
+    public void closeDb() {
+        database.close();
+    }
+
 
     @Test
     public void addAndRemoveTask() {
+        //  Add
         MainActivity activity = rule.getActivity();
         TextView lblNoTask = activity.findViewById(R.id.lbl_no_task);
         RecyclerView listTasks = activity.findViewById(R.id.list_tasks);
+
+        int count = Objects.requireNonNull(listTasks.getAdapter()).getItemCount();  //  <<<<<<Through Adapter
 
         onView(withId(R.id.fab_add_task)).perform(click());
         onView(withId(R.id.txt_task_name)).perform(replaceText("Tâche example"));
@@ -48,19 +79,38 @@ public class MainActivityInstrumentedTest {
         // Check that recyclerView is displayed
         assertThat(listTasks.getVisibility(), equalTo(View.VISIBLE));
         // Check that it contains one element only
-        assertThat(listTasks.getAdapter().getItemCount(), equalTo(1));
+        assertThat(listTasks.getAdapter().getItemCount(), equalTo(count + 1)); // <<<<<<<<< +1
 
-        onView(withId(R.id.img_delete)).perform(click());
+        //  remove
+        onView(withRecyclerView(R.id.list_tasks).atPositionOnView(0, R.id.img_delete))
+                .perform(click());//  <<<<<<< use recyclerview
+        int countList = listTasks.getAdapter().getItemCount();//  <<<<<<<
 
-        // Check that lblTask is displayed
-        assertThat(lblNoTask.getVisibility(), equalTo(View.VISIBLE));
-        // Check that recyclerView is not displayed anymore
-        assertThat(listTasks.getVisibility(), equalTo(View.GONE));
+        if (countList == 0) {
+            // Check that lblTask is displayed
+            assertThat(lblNoTask.getVisibility(), equalTo(View.VISIBLE));
+            // Check that recyclerView size
+            assertThat(listTasks.getVisibility(), equalTo(View.GONE));
+        } else {
+            assertThat(listTasks.getAdapter().getItemCount(), equalTo(count));  // back to original count
+        }
     }
 
     @Test
     public void sortTasks() {
         MainActivity activity = rule.getActivity();
+        TextView lblNoTask = activity.findViewById(R.id.lbl_no_task);
+        RecyclerView listTasks = activity.findViewById(R.id.list_tasks);
+
+        //  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< //  delete all tasks
+
+        int count = Objects.requireNonNull(listTasks.getAdapter()).getItemCount();
+        for (int i = 0; i < count; i++) {
+            onView(withRecyclerView(R.id.list_tasks).atPositionOnView(0, R.id.img_delete))
+                    .perform(click());
+        }
+
+        //  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         onView(withId(R.id.fab_add_task)).perform(click());
         onView(withId(R.id.txt_task_name)).perform(replaceText("aaa Tâche example"));

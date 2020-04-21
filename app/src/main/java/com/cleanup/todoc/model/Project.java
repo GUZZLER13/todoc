@@ -50,7 +50,7 @@ public class Project {
      *
      * @return all the projects of the application
      */
-    
+
     @NonNull
     public static Project[] getAllProjects() {
         return new Project[]{
