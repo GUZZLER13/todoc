@@ -9,6 +9,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.cleanup.todoc.database.ProjectDao;
 import com.cleanup.todoc.database.TodocDataBase;
 import com.cleanup.todoc.model.Project;
+import com.cleanup.todoc.utils.LiveDataTestUtil;
 
 import org.junit.After;
 import org.junit.Before;

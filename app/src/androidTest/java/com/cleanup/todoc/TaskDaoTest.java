@@ -11,6 +11,7 @@ import com.cleanup.todoc.database.TaskDao;
 import com.cleanup.todoc.database.TodocDataBase;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.utils.LiveDataTestUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -52,9 +53,9 @@ public class TaskDaoTest {
 
 
     @Test
-    public void insertAndGetTask() throws InterruptedException {    //  'GET TASK'
+    public void insertAndGetTask() throws InterruptedException {    // GET TASK
         //  create task
-        Task task = new Task(1, "Task 0", 0000);
+        Task task = new Task(1, "Task 0", 0);
         //  insert task
         mTaskDao.saveTask(task);
         //  list all tasks
@@ -66,7 +67,7 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void deleteTask() throws InterruptedException {  //  'DELETE TASK'
+    public void deleteTask() throws InterruptedException {  // DELETE TASK
         //  create task
         Task task = new Task(1, "Task 2", 2222);
         //  insert task

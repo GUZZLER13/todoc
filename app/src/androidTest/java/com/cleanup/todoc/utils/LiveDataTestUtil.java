@@ -1,4 +1,4 @@
-package com.cleanup.todoc;
+package com.cleanup.todoc.utils;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
