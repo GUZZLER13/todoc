@@ -1,4 +1,5 @@
-# todoc (OpenClassrooms - Projet 5 Parcours Développeur d'application Android)
+# TODOC
+# OpenClassrooms - P5 Parcours Développeur d'application Android
 
 Application de gestion de tâches : ajout d'une persistance de données via SQLite ROOM
 
